@@ -105,8 +105,7 @@ export class ReportsService {
         ? report[0]
         : { message: 'No data for the selected day.' };
 
-      await this.cacheService.setCache(cacheKey, result, 86400);
-
+      await this.cacheService.setCache(cacheKey, result, 3600);
       return result;
     } catch (error) {
       throw new BadRequestException(
