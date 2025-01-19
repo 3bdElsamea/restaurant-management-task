@@ -63,10 +63,6 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
-- i tried to create a docker image and docker-compose file but i faced some issues related to running mongo and redis
-  with the application and i didn't have enough time or mental power to investigate it more but, i will provide the
-  docker file and the docker-compose file in the repository.
-
 # API Documentation
 
 The API endpoints and their usage are documented in a Postman Collection. You can access it using the link below:
