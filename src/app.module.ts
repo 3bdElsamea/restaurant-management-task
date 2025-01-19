@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { OrdersModule } from './orders/orders.module';
 import { APP_PIPE } from '@nestjs/core';
 import { ReportsModule } from './reports/reports.module';
+import { CacheModule } from './cache/cache.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { ReportsModule } from './reports/reports.module';
     }),
     OrdersModule,
     ReportsModule,
+    CacheModule,
   ],
   controllers: [AppController],
   providers: [

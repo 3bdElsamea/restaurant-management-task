@@ -2,17 +2,26 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Order } from '../orders/schemas/order.schema';
+import { CacheService } from '../cache/cache.service';
 
 @Injectable()
 export class ReportsService {
   constructor(
     @InjectModel(Order.name) private readonly orderModel: Model<Order>,
+    private readonly cacheService: CacheService,
   ) {}
 
   async generateDailySalesReport(date?: string) {
     try {
       const { startOfDay, endOfDay } = this.getDateRange(date);
-      console.log(startOfDay, endOfDay);
+
+      const cacheKey = `daily_sales_report_${startOfDay.toISOString()}`;
+
+      const cachedReport = await this.cacheService.getCache(cacheKey);
+      if (cachedReport) {
+        console.log('Returning cached report');
+        return cachedReport;
+      }
 
       const report = await this.orderModel.aggregate([
         {
@@ -47,7 +56,7 @@ export class ReportsService {
                 },
               },
               { $sort: { totalQuantity: -1 } },
-              { $limit: 10 }, // Limit to top 10 items
+              { $limit: 10 },
             ],
             overallSummary: [
               {
@@ -92,9 +101,13 @@ export class ReportsService {
         },
       ]);
 
-      return report.length
+      const result = report.length
         ? report[0]
         : { message: 'No data for the selected day.' };
+
+      await this.cacheService.setCache(cacheKey, result, 86400);
+
+      return result;
     } catch (error) {
       throw new BadRequestException(
         'Failed to generate report: ' + error.message,
