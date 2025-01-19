@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { OrdersModule } from './orders/orders.module';
 import { APP_PIPE } from '@nestjs/core';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { APP_PIPE } from '@nestjs/core';
       inject: [ConfigService],
     }),
     OrdersModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [
