@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - PORT=3000
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}" # Maps the environment's PORT to the container
+    env_file:
+      - .env
+    depends_on:
+      - mongodb
+      - redis
+    restart: always
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27018:27017"  # Change local port to 27018
+    volumes:
+      - mongodb_data:/data/db
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6380:6379"  # Change local port to 6380
+    command: redis-server --requirepass example
+    environment:
+      REDIS_PASSWORD: example
+
+volumes:
+  mongodb_data:
